@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^sugestia/', include('suggest.urls')),
     url(r'^lesmianator/', include('lesmianator.urls')),
     url(r'^przypisy/', include('dictionary.urls')),
+    url(r'^spoleczne/', include('social.urls')),
     url(r'^raporty/', include('reporting.urls')),
 
     # Static pages
@@ -45,7 +46,9 @@ urlpatterns = patterns('',
         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
     url(r'^%s(?P<path>.*)$' % settings.STATIC_URL[1:], 'django.views.static.serve',
         {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
-    url(r'^$', 'django.views.generic.simple.redirect_to', {'url': 'katalog/'}),
+    url(r'^$', 'django.views.generic.simple.direct_to_template',
+        {'template': 'main_page.html'}, name='main_page'),
+    url(r'^$', 'wolnelektury.views.main_page', name='main_page'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
 )
 

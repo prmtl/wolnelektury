@@ -148,6 +148,7 @@ INSTALLED_APPS = [
     'opds',
     'pdcounter',
     'reporting',
+    'social',
     'sponsors',
     'stats',
     'suggest',
@@ -160,7 +161,20 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY=True
 # CSS and JavaScript file groups
 COMPRESS_CSS = {
     'all': {
-        'source_filenames': ('css/master.css', 'css/jquery.autocomplete.css', 'css/jquery.countdown.css', 'css/master.plain.css', 'css/sponsors.css', 'css/facelist_2-0.css',),
+        #'source_filenames': ('css/master.css', 'css/jquery.autocomplete.css', 'css/jquery.countdown.css', 'css/master.plain.css', 'css/sponsors.css', 'css/facelist_2-0.css',),
+        'source_filenames': (
+            'css/new_master.css',
+            'css/catalogue/header.css',
+            'css/catalogue/main_page.css',
+            'css/catalogue/forms.css',
+            'css/catalogue/catalogue.css',
+
+            'css/jquery.autocomplete.css',
+            'css/jquery.countdown.css',
+            #'css/master.plain.css',
+            'css/sponsors.css',
+            #'css/facelist_2-0.css',
+            ),
         'output_filename': 'css/all.min?.css',
     },
     'book': {
@@ -190,7 +204,16 @@ COMPRESS_JS = {
         'output_filename': 'js/all?.min.js',
     },
     'book': {
-        'source_filenames': ('js/jquery.eventdelegation.js', 'js/jquery.scrollto.js', 'js/jquery.highlightfade.js', 'js/book.js',),
+        'source_filenames': (
+            'js/book.js',
+            'js/book-social.js',
+            'js/jquery.form.js',
+            'js/jquery.eventdelegation.js',
+            'js/jquery.scrollto.js',
+            'js/jquery.highlightfade.js',
+            #'js/rangy/rangy-core.js',
+            #'js/rangy/rangy-selectionsaverestore.js',
+            ),
         'output_filename': 'js/book?.min.js',
     },
     'book_ie': {

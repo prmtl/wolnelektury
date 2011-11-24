@@ -1,0 +1,85 @@
+.jqmOverlay { background-color: #000; }
+
+.ajax-form-window {
+    position: absolute;
+    display: none;
+    background-color: transparent;
+    margin-top: -0.5em;
+    margin-left: 1em;
+}
+
+.ajax-form-window .header {
+    background-color: #FFF;
+    border-right: 0.3em solid #DDD;
+    width: 4em;
+    right: 0;
+    left: auto;
+    padding: 0.5em 1em 0.5em 1em;
+    float: right;
+    text-align: center;
+}
+
+.ajax-form-window .target {
+    clear: both;
+    background-color: #FFF;
+    border-right: 0.3em solid #DDD;
+    border-bottom: 0.3em solid #DDD;
+    padding: 1em;
+}
+
+
+
+#set-window {
+    width: 32em;
+}
+#login-register-window {
+    width: 24em;
+}
+#user-shelves-window {
+    width: 28em;
+}
+#suggest-window {
+    width: 35em;
+}
+#suggest-publishing-window {
+    width: 45em;
+}
+
+
+
+
+
+
+#suggest-form textarea {
+	width: 30em;
+}
+
+#suggest-publishing-form textarea {
+	width: 40em;
+    height: 6em;
+}
+
+
+
+.shelf-list {
+    list-style: none;
+    padding: 0;
+}
+
+.shelf-list li {
+    padding: 0.25em;
+    margin: 0 -0.25em;
+}
+
+.shelf-list a.delete-shelf {
+    color: #900;
+    float: right;
+    padding: 0.25em 0.25em 0.25em 1em;
+    margin: -0.25em;
+}
+
+.shelf-list a.delete-shelf:active, .shelf-list a.delete-shelf:hover {
+    color: #FFF;
+    background-color: #900;
+    text-decoration: none;
+}

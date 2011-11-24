@@ -1,0 +1,65 @@
+img {
+    border: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover, a:active {
+    text-decoration: underline;
+}
+
+.clearboth {
+    clear: both;
+}
+
+
+/* ======================== */
+/* = Footer with sponsors = */
+/* ======================== */
+#footer {
+    border-top: 0.1em solid #999;
+    color: #777;
+    font-size: 0.8em;
+    padding-top: 0.5em;
+    margin: 2em 0 0 0;
+}
+
+#footer p {
+    margin: 0;
+}
+
+#footer a {
+    color: #999;
+    text-decoration: underline;
+}
+
+
+/* =============== */
+/* = Simple form = */
+/* =============== */
+.cuteform ol, .cuteform ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.cuteform ol li, .cuteform ul li {
+    margin-top: 0.7em;
+}
+
+.cuteform label {
+    display: block;
+}
+
+.cuteform span.help-text {
+    display: block;
+    font-size: 0.8em;
+    color: #999;
+}
+
+.cuteform .error {
+    color: #BF3024;
+	display: block;
+}

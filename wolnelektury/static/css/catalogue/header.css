@@ -1,0 +1,39 @@
+#header #logo {
+    float: left;
+}
+
+#header #user-info {
+    margin: 0 0 0 auto;
+    width: 40em;
+    text-align: right;
+}
+
+.lang-menu {
+    margin-right: 0.7em;
+    line-height: 24px;
+} 
+
+.lang-menu button {
+    color: blue;
+    border: none;
+    border-right: 1px solid gray;
+    border-radius: 2px;
+    background: inherit;
+    cursor: pointer;
+    padding: 0.2em 0.5em;
+    font-size: 10px;
+}
+
+.lang-menu button:hover {
+    color: blue;
+    text-decoration: underline;	
+}
+
+.lang-menu button.active {
+    color: black;
+    text-decoration: none;
+}
+
+.lang-menu button.last {
+    border-right: none;
+}

@@ -1,0 +1,50 @@
+#maincontent {
+    margin: auto;
+}
+
+#main_big_box {
+    height: 300px;
+    margin: auto;
+    max-width: 50em;
+}
+
+#main_big_box blockquote {
+    font-size: 3em;
+}
+#main_big_box .author {
+    text-align: right;
+}
+
+#main_catalogue_links {
+    text-align:center;
+    margin: 1em;
+}
+#main_catalogue_links ul {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    display: inline;
+    list-style: none;
+    padding: 1em 0;
+}
+#main_catalogue_links li {
+    display: inline;
+    padding: 0;
+    margin: 0;
+}
+#main_catalogue_links li a {
+    display: inline;
+    padding: 1em .5em;
+}
+
+
+.main_box {
+    max-width: 30%;
+    float: left;
+    margin: 0 2%;
+}
+
+.main_box ol, .main_box ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}

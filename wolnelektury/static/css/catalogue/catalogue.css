@@ -1,0 +1,5 @@
+h2:hover .permalink:after {
+    content: "¶";
+    font-size: .8em;
+    color: #ddd;
+}

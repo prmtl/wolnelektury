@@ -1,0 +1,52 @@
+{% load i18n catalogue_tags %}
+{% if user.is_authenticated %}
+    <p>
+        {% trans "Welcome" %}, <strong>{{ user.username }}</strong>
+        | <a href="{% url user_shelves %}" id="user-shelves-link">{% trans "Your shelves" %}</a>
+        {% if user.is_staff %}
+        | <a href="/admin/">{% trans "Administration" %}</a>
+        {% endif %}
+        | <a href="{% url suggest %}" id="suggest-link">{% trans "Report a bug" %}</a>
+        | <a href="{% url logout %}?next={{ request.get_full_path }}">{% trans "Logout" %}</a>
+    </p>
+{% else %}
+    <p><a href="{% url suggest %}" id="suggest-link">{% trans "Report a bug" %}</a>
+        | <a href="{% url login %}" class="login-register-link">{% trans "Sign in" %} / {% trans "Register" %}</a></p>
+{% endif %}
+
+
+
+
+<div id="login-register-window" class='ajax-form-window'>
+    <div class="header"><a href="#" class="jqmClose">{% trans "Close" %}</a></div>
+    <div class="target">
+        <form method="post" action="{% url login %}" id="login-form" class="cuteform">
+            <h2>{% trans "Sign in" %} / <a href="#" id="show-registration-form" style="font-size: 0.85em; font-weight: normal">{% trans "Register" %}</a></h2>
+            <p><span id="id_login-__all__"></span></p>
+            <ol>
+                {% authentication_form %}
+                <li><input type="submit" value="{% trans "Sign in" %}" /></li>
+            </ol>
+        </form>
+        <form method="post" action="{% url register %}" id="registration-form" class="cuteform" style="display: none;">
+            <h2><a href="#" id="show-login-form" style="font-size: 0.85em; font-weight: normal">{% trans "Sign in" %}</a> / {% trans "Register" %}</h2>
+            <p><span id="id_registration-__all__"></span></p>
+            <ol>
+                {% user_creation_form %}
+                <li><input type="submit" value="{% trans "Register" %}" /></li>
+            </ol>
+        </form>
+    </div>
+</div>
+<div id="user-shelves-window" class='ajax-form-window'>
+    <div class="header"><a href="#" class="jqmClose">{% trans "Close" %}</a></div>
+    <div class="target">
+        <p><img src="{{ STATIC_URL }}img/indicator.gif" alt="*"/> {% trans "Loading" %}</p>
+    </div>
+</div>
+<div id="suggest-window" class='ajax-form-window'>
+    <div class="header"><a href="#" class="jqmClose">{% trans "Close" %}</a></div>
+    <div class="target">
+        <p><img src="{{ STATIC_URL }}img/indicator.gif" alt="*"/> {% trans "Loading" %}</p>
+    </div>
+</div>

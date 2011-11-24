@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load catalogue_tags %}
+
+
+{% block bodyid %}catalogue{% endblock %}
+
+{% block body %}
+    {% if categories.author %}
+        <h2>{% trans "Authors" %}
+            <a class="permalink" name="autorzy" href="#autorzy"></a></h2>
+        {% tag_list categories.author %}
+    {% endif %}
+    {% if categories.kind %}
+        <h2>{% trans "Kinds" %}
+            <a class="permalink" name="rodzaje" href="#rodzaje"></a></h2>
+        {% tag_list categories.kind %}
+    {% endif %}
+    {% if categories.genre %}
+        <h2>{% trans "Genres" %}
+            <a class="permalink" name="gatunki" href="#gatunki"></a></h2>
+        {% tag_list categories.genre %}
+    {% endif %}
+    {% if categories.epoch %}
+        <h2>{% trans "Epochs" %}
+            <a class="permalink" name="epoki" href="#epoki"></a></h2>
+        {% tag_list categories.epoch %}
+    {% endif %}
+    {% if categories.theme %}
+        <h2>{% trans "Themes and topics" %}
+            <a class="permalink" name="motywy" href="#motywy"></a></h2>
+        {% tag_list categories.theme %}
+    {% endif %}
+{% endblock %}

@@ -192,6 +192,8 @@ p {
     left: 40em;
     line-height: 1.5em;
     text-align: left;
+
+    -moz-user-select: none;
 }
 
 .annotation {
@@ -247,6 +249,7 @@ blockquote {
     text-align: center;
     padding: 0.25em 0.5em;
     line-height: 1.5em;
+    -moz-user-select: none;
 }
 
 .anchor:hover, #book-text .anchor:active {
@@ -369,6 +372,11 @@ em.person {
 
 .verse:after {
     content: "\feff";
+}
+
+pre {
+    font-size: .6em;
+    line-height: 1.5em;
 }
 
 

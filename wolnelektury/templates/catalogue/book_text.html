@@ -7,8 +7,9 @@
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
         <title>{% block title %}WolneLektury.pl{% endblock %}</title>
         <link rel="icon" href="{{ STATIC_URL }}img/favicon.png" type="image/x-icon" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
         {% compressed_css "book" %}
-        {% compressed_js "jquery" %}
+        {#% compressed_js "jquery" %#}
         {% compressed_js "book" %}
         <!--[if IE]>
             {% compressed_js "book_ie" %}
@@ -43,7 +44,35 @@
                 {% endfor %}
             </ol>
         </div>
+
         {{ book.html_file.read|safe }}
+
+        <div class="tlen0">
+
+            <div id="cite-box" class="ignore"
+                style="position:absolute; background: #eee; border: 1px solid #ddd; left:39.5em; display:none;
+                    padding: 5px; box-shadow: 5px 5px 5px #888; border-radius: 5px;">
+                <div style='display:none' id="coords"></div>
+                <div id="cite-permalink"><a href="">permalink</a></div>
+                <form id='underline-form' method="post" action="{% url social_underline book.slug %}">
+                    {% csrf_token %}
+                    {{ underline_form }}
+                    <button>podkreśl</button>
+                </form>
+                <form id='underline-comment-form' method="post" action="{% url social_comment_underline book.slug %}">
+                    {% csrf_token %}
+                    {{ comment_form.uid }}
+                    {{ comment_form.comment }}
+                    <button>skomentuj</button>
+                </form>
+                <div id="text"></div>
+            </div>
+
+            {% for u in underlines %}
+                <div class="underline" data-start="{{ u.start }}" data-end="{{ u.end }}" data-comment="{{ u.comment }}" />
+            {% endfor %}
+        </div>
+
         {{ piwik_tag|safe }}
         <script type="text/javascript">
         var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

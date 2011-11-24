@@ -77,7 +77,6 @@ hr {
 /* = Header with logo and user-info = */
 /* ================================== */
 #header {
-    position: relative;
     margin-top: 1.5em;
 }
 

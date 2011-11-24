@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load catalogue_tags cache %}
+
+
+{% block bodyid %}main-page{% endblock %}
+
+{% block body %}
+    <div id="main_big_box" style="display: table; overflow:hidden">
+        <div style="display: table-cell; vertical-align: middle;">
+            <blockquote><p>„Ala ma kota”</p></blockquote>
+            <p class="author">(Marian Falski)</p>
+        </div>
+    </div>
+
+
+    <div id="main_catalogue_links">
+        <ul>
+            <li><a href="{% url catalogue %}#autorzy">{% trans "Authors" %}</a></li>
+            <li><a href="{% url catalogue %}#rodzaje">{% trans "Kinds" %}</a></li>
+            <li><a href="{% url catalogue %}#gatunki">{% trans "Genres" %}</a></li>
+            <li><a href="{% url catalogue %}#epoki">{% trans "Epochs" %}</a></li>
+            <li><a href="{% url catalogue %}#motywy">{% trans "Themes and topics" %}</a></li>
+            <li><a href="{% url book_list %}">{% trans "All books" %}</a></li>
+            <li><a href="{% url audiobook_list %}">{% trans "Audiobooks" %}</a></li>
+            <li><a href="{% url daisy_list %}">{% trans "DAISY" %}</a></li>
+        </ul>
+    </div>
+
+    <div class="clearboth"></div>
+
+    <div id="main_blog_box" class="main_box">
+        <h2>{% trans "News" %}</h2>
+        {% cache 1800 latest-blog-posts %}
+        {% latest_blog_posts "http://nowoczesnapolska.org.pl/category/wolne-lektury/feed/" %}
+        {% endcache %}
+        <p class="see-more"><a href="http://www.nowoczesnapolska.org.pl/">{% trans "See our blog" %} ⇒</a></p>
+    </div>
+
+    <div id="main_info_box" class="main_box">
+        <h2>{% trans "Info" %}</h2>
+        <ul>
+            <li><a href="{% url about_us %}">
+                {% trans "About us!" %}
+            </a></li>
+            <li><a href="{% url help_us %}">
+                {% trans "You can help us!" %}
+            </a></li>
+        </ul>
+    </div>
+
+    <div id="main_tools_box" class="main_box">
+        <h2>{% trans "More" %}</h2>
+        <ul>
+            <li><a href="{% url lesmianator %}">
+                <strong>Leśmianator</strong> –
+                {% trans "an automatic poet" %}
+                </a></li>
+            <li><a href="{% url widget %}">
+                <strong>{% trans "Widget" %}</strong> –
+                {% trans "WolneLektury.pl search on your site" %}
+                </a></li>
+            <li><a href="{% url lessons_document_list %}">
+                <strong>{% trans "Hand-outs for teachers" %}</strong> –
+                {% trans "Lessons' prospects and other ideas for using Wolnelektury.pl for teaching." %}
+                </a></li>
+        </ul>
+    </div>
+
+{% endblock %}
