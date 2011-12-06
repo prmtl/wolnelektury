@@ -91,6 +91,15 @@ var citeBox = function() {
 }();
 
 
+var topOffset = function(obj) {
+    var top = 0;
+    do {
+        top += obj.offsetTop;
+    } while (obj = obj.offsetParent);
+    return top;
+}
+
+
 var markSelection = (function() {
     var markerTextChar = "\ufeff";
     var markerTextCharEntity = "&#xfeff;";
@@ -159,11 +168,7 @@ var markSelection = (function() {
         if (markerEl) {
 
             // Find markerEl position http://www.quirksmode.org/js/findpos.html
-            var obj = markerEl;
-            var top = 0;
-            do {
-                top += obj.offsetTop;
-            } while (obj = obj.offsetParent);
+            var top = topOffset(markerEl);
 
             citeBox({
                 start: soff,
@@ -196,20 +201,6 @@ function offset_to_pair(offset, $cursor) {
 
 
 $(document).bind("mouseup", markSelection);
-
-  if (location.hash) {
-    var selection = window.getSelection();
-    selection.removeAllRanges();
-    var range = document.createRange();
-
-    //var e = $(".theme-end[fid='" + $(this).attr('fid') + "']")[0];
-
-    //if (e) {
-        range.setStartAfter(this);
-        range.setEndBefore(e);
-        selection.addRange(range);
-    //}
-  }
 
 
     function add_underline_marker(start_offset, end_offset, comment) {
@@ -252,12 +243,20 @@ $(document).bind("mouseup", markSelection);
 
 
     $('#underline-form').ajaxForm({
-        success: function(response, ) {
+        success: function(response) {
             alert(response);
             var form = $('#underline-form').get(0);
             add_underline_marker(form.start.value, form.end.value);
             citeBox({comment: true});
             }
+    });
+
+    $(".anchor").click(function() {
+        citeBox({
+            fragment: false,
+            start: 10,
+            top: topOffset(this)
+        });
     });
 
 

@@ -49,8 +49,8 @@
                     {% if book.pdf_file %}
                         <a href="{{ book.pdf_file.url }}"><img src="{{ STATIC_URL }}img/pdf.png" title="{% trans "Download PDF" %} &ndash; {% trans "for reading" %} {% trans "and printing using" %} Adobe Reader" %}" alt="{% trans "Download PDF" %}" /></a>
                     {% endif %}
-                    {% if book.root_ancestor.epub_file %}
-                        <a href="{{ book.root_ancestor.epub_file.url }}"><img src="{{ STATIC_URL }}img/epub.png" title="{% trans "Download EPUB" %} &ndash; {% trans "for reading" %} {% trans "on mobile devices" %}" alt="{% trans "Download EPUB" %}" /></a>
+                    {% if book.epub_file %}
+                        <a href="{{ book.epub_file.url }}"><img src="{{ STATIC_URL }}img/epub.png" title="{% trans "Download EPUB" %} &ndash; {% trans "for reading" %} {% trans "on mobile devices" %}" alt="{% trans "Download EPUB" %}" /></a>
                     {% endif %}
                     {% if book.mobi_file %}
                         <a href="{{ book.mobi_file.url }}"><img src="{{ STATIC_URL }}img/mobi.png" title="{% trans "Download MOBI" %} &ndash; {% trans "for reading" %} {% trans "on mobile devices" %}" alt="{% trans "Download MOBI" %}" /></a>
@@ -75,7 +75,7 @@
                         <img src="{{ STATIC_URL }}img/speaker.png" id="speaker" alt="Speaker icon"/>
                         {% if book.has_mp3_file %}
                             <ul class="audiobook-list" id="mp3-files">
-                            {% for media in book.get_mp3 %}
+                            {% for media in book.get_media:"mp3" %}
                                 <li class="mp3Player">
                                   <a href="{{ media.file.url }}">{{ media.name }}</a><br/>
                                   {% trans "Artist" %}: {{ media.get_extra_info_value.artist_name }}<br/>

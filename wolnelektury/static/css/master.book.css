@@ -240,10 +240,12 @@ blockquote {
     position:relative;
 }
 .anchor {
+    /*display: none;*/
+    color: transparent;
     position: absolute;
     margin: -0.25em -0.5em;
     left: -3em;
-    color: #777;
+    ecolor: #777;
     font-size: 12px;
     width: 2em;
     text-align: center;
@@ -251,8 +253,15 @@ blockquote {
     line-height: 1.5em;
     -moz-user-select: none;
 }
+.verse:hover .anchor, .paragraph:hover .anchor {
+    color: #777;
+}
 
-.anchor:hover, #book-text .anchor:active {
+.verse:hover .anchor:active,
+.paragraph:hover .anchor:active,
+.verse:hover .anchor:hover,
+.paragraph:hover .anchor:hover
+ {
     color: #FFF;
     background-color: #CCC;
 }

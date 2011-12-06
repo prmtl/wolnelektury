@@ -2,6 +2,7 @@
 # This file is part of Wolnelektury, licensed under GNU Affero GPLv3 or later.
 # Copyright © Fundacja Nowoczesna Polska. See NOTICE for more information.
 #
+from collections import namedtuple
 from datetime import datetime
 
 from django.db import models
@@ -35,12 +36,6 @@ TAG_CATEGORIES = (
     ('book', _('book')),
 )
 
-MEDIA_FORMATS = (
-    ('odt', _('ODT file')),
-    ('mp3', _('MP3 file')),
-    ('ogg', _('OGG file')),
-    ('daisy', _('DAISY file')), 
-)
 
 # not quite, but Django wants you to set a timeout
 CACHE_FOREVER = 2419200  # 28 days
@@ -177,10 +172,7 @@ def book_upload_path(ext=None, maxlen=100):
 
         # how to put related book's slug here?
         if not ext:
-            if media.type == 'daisy':
-                ext = 'daisy.zip'
-            else:
-                ext = media.type
+            ext = media.formats[media.type].ext
         if not media.name:
             name = slughifi(filename.split(".")[0])
         else:
@@ -190,13 +182,23 @@ def book_upload_path(ext=None, maxlen=100):
 
 
 class BookMedia(models.Model):
-    type        = models.CharField(_('type'), choices=MEDIA_FORMATS, max_length="100")
+    FileFormat = namedtuple("FileFormat", "name ext")
+    formats = SortedDict([
+        ('mp3', FileFormat(name='MP3', ext='mp3')),
+        ('ogg', FileFormat(name='Ogg Vorbis', ext='ogg')),
+        ('daisy', FileFormat(name='DAISY', ext='daisy.zip')),
+    ])
+    format_choices = [(k, _('%s file') % t.name)
+            for k, t in formats.items()]
+
+    type        = models.CharField(_('type'), choices=format_choices, max_length="100")
     name        = models.CharField(_('name'), max_length="100")
     file        = OverwritingFileField(_('file'), upload_to=book_upload_path())
     uploaded_at = models.DateTimeField(_('creation date'), auto_now_add=True, editable=False)
     extra_info  = JSONField(_('extra information'), default='{}', editable=False)
     book = models.ForeignKey('Book', related_name='media')
     source_sha1 = models.CharField(null=True, blank=True, max_length=40, editable=False)
+
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.file.name.split("/")[-1])
@@ -301,8 +303,9 @@ class Book(models.Model):
     wiki_link     = models.CharField(blank=True, max_length=240)
     # files generated during publication
 
-    file_types = ['epub', 'html', 'mobi', 'pdf', 'txt', 'xml']
-    
+    ebook_formats = ['pdf', 'epub', 'mobi', 'txt']
+    formats = ebook_formats + ['html', 'xml']
+
     parent        = models.ForeignKey('self', blank=True, null=True, related_name='children')
     objects  = models.Manager()
     tagged   = managers.ModelTaggedItemManager(Tag)
@@ -355,14 +358,14 @@ class Book(models.Model):
         return book_tag
 
     def has_media(self, type):
-        if type in Book.file_types:
+        if type in Book.formats:
             return bool(getattr(self, "%s_file" % type))
         else:
             return self.media.filter(type=type).exists()
 
     def get_media(self, type):
         if self.has_media(type):
-            if type in Book.file_types:
+            if type in Book.formats:
                 return getattr(self, "%s_file" % type)
             else:                                             
                 return self.media.filter(type=type)
@@ -406,14 +409,12 @@ class Book(models.Model):
             # files generated during publication
             if self.has_media("html"):
                 formats.append(u'<a href="%s">%s</a>' % (reverse('book_text', kwargs={'slug': self.slug}), _('Read online')))
-            if self.has_media("pdf"):
-                formats.append(u'<a href="%s">PDF</a>' % self.get_media('pdf').url)
-            if self.has_media("mobi"):
-                formats.append(u'<a href="%s">MOBI</a>' % self.get_media('mobi').url)
-            if self.root_ancestor.has_media("epub"):
-                formats.append(u'<a href="%s">EPUB</a>' % self.root_ancestor.get_media('epub').url)
-            if self.has_media("txt"):
-                formats.append(u'<a href="%s">TXT</a>' % self.get_media('txt').url)
+            for ebook_format in self.ebook_formats:
+                if self.has_media(ebook_format):
+                    formats.append(u'<a href="%s">%s</a>' % (
+                        self.get_media(ebook_format).url,
+                        ebook_format.upper()
+                        ))
             # other files
             for m in self.media.order_by('type'):
                 formats.append(u'<a href="%s">%s</a>' % (m.file.url, m.type.upper()))
@@ -427,29 +428,12 @@ class Book(models.Model):
                 cache.set(cache_key, short_html, CACHE_FOREVER)
             return mark_safe(short_html)
 
-    @property
-    def root_ancestor(self):
-        """ returns the oldest ancestor """
-
-        if not hasattr(self, '_root_ancestor'):
-            book = self
-            while book.parent:
-                book = book.parent
-            self._root_ancestor = book
-        return self._root_ancestor
-
-
     def has_description(self):
         return len(self.description) > 0
     has_description.short_description = _('description')
     has_description.boolean = True
 
     # ugly ugly ugly
-    def has_odt_file(self):
-        return bool(self.has_media("odt"))
-    has_odt_file.short_description = 'ODT'
-    has_odt_file.boolean = True
-
     def has_mp3_file(self):
         return bool(self.has_media("mp3"))
     has_mp3_file.short_description = 'MP3'
@@ -513,20 +497,13 @@ class Book(models.Model):
         # remove zip with all mobi files
         remove_zip(settings.ALL_MOBI_ZIP)
 
-    def build_epub(self, remove_descendants=True):
-        """ (Re)builds the epub file.
-            If book has a parent, does nothing.
-            Unless remove_descendants is False, descendants' epubs are removed.
-        """
+    def build_epub(self):
+        """(Re)builds the epub file."""
         from StringIO import StringIO
         from hashlib import sha1
         from django.core.files.base import ContentFile
         from librarian import epub, NoDublinCore
         from catalogue.utils import ORMDocProvider, remove_zip
-
-        if self.parent:
-            # don't need an epub
-            return
 
         epub_file = StringIO()
         try:
@@ -535,15 +512,6 @@ class Book(models.Model):
             FileRecord(slug=self.slug, type='epub', sha1=sha1(epub_file.getvalue()).hexdigest()).save()
         except NoDublinCore:
             pass
-
-        book_descendants = list(self.children.all())
-        while len(book_descendants) > 0:
-            child_book = book_descendants.pop(0)
-            if remove_descendants and child_book.has_epub_file():
-                child_book.epub_file.delete()
-            # save anyway, to refresh short_html
-            child_book.save()
-            book_descendants += list(child_book.children.all())
 
         # remove zip package with all epub files
         remove_zip(settings.ALL_EPUB_ZIP)
@@ -729,17 +697,16 @@ class Book(models.Model):
                 book.build_txt()
 
         if not settings.NO_BUILD_EPUB and build_epub:
-            book.root_ancestor.build_epub()
+            book.build_epub()
 
         if not settings.NO_BUILD_PDF and build_pdf:
-            book.root_ancestor.build_pdf()
+            book.build_pdf()
 
         if not settings.NO_BUILD_MOBI and build_mobi:
             book.build_mobi()
 
         book_descendants = list(book.children.all())
         # add l-tag to descendants and their fragments
-        # delete unnecessary EPUB files
         while len(book_descendants) > 0:
             child_book = book_descendants.pop(0)
             child_book.tags = list(child_book.tags) + [book_tag]
@@ -908,7 +875,7 @@ def _has_factory(ftype):
 
     
 # add the file fields
-for t in Book.file_types:
+for t in Book.formats:
     field_name = "%s_file" % t
     models.FileField(_("%s file" % t.upper()),
             upload_to=book_upload_path(t),

@@ -93,7 +93,7 @@ class BookDetailHandler(BaseHandler):
 
     """
     allowed_methods = ['GET']
-    fields = ['title', 'parent'] + Book.file_types + [
+    fields = ['title', 'parent'] + Book.formats + [
         'media', 'url'] + category_singular.keys()
 
     @piwik_track
@@ -202,7 +202,7 @@ def _file_getter(format):
         else:
             return ''
     return get_file
-for format in Book.file_types:
+for format in Book.formats:
     setattr(BooksHandler, format, _file_getter(format))
 
 
@@ -354,8 +354,7 @@ class CatalogueHandler(BaseHandler):
     def book_dict(book, fields=None):
         all_fields = ['url', 'title', 'description',
                       'gazeta_link', 'wiki_link',
-                      ] + Book.file_types + [
-                      'mp3', 'ogg', 'daisy',
+                      ] + Book.formats + BookMedia.formats + [
                       'parent', 'parent_number',
                       'tags',
                       'license', 'license_description', 'source_name',
@@ -372,7 +371,7 @@ class CatalogueHandler(BaseHandler):
         obj = {}
         for field in fields:
 
-            if field in Book.file_types:
+            if field in Book.formats:
                 f = getattr(book, field+'_file')
                 if f:
                     obj[field] = {
@@ -380,7 +379,7 @@ class CatalogueHandler(BaseHandler):
                         'size': f.size,
                     }
 
-            elif field in ('mp3', 'ogg', 'daisy'):
+            elif field in BookMedia.formats:
                 media = []
                 for m in book.media.filter(type=field):
                     media.append({

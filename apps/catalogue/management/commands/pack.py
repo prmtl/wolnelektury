@@ -33,7 +33,7 @@ class Command(BaseCommand):
         include = options.get('include')
         exclude = options.get('exclude')
 
-        if ftype in Book.file_types:
+        if ftype in Book.formats:
             field = "%s_file" % ftype
         else:
             print self.style.ERROR('Unknown file type.')
