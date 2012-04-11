@@ -8,7 +8,6 @@ from django.conf import settings
 
 from api.helpers import timestamp
 from catalogue.models import Book, Tag
-from picture.tests.utils import RequestFactory
 from picture.forms import PictureImportForm
 from picture.models import Picture, picture_storage
 import picture.tests
